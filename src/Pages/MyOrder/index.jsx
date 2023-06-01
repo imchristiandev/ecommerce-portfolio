@@ -21,7 +21,7 @@ export function MyOrder() {
             className='h-6 w-6 text-black cursor-pointer'
           />
         </Link>
-        <h1>My Order</h1>
+        <h1 className='font-medium text-xl'>My Order</h1>
       </div>
       {
         order && (

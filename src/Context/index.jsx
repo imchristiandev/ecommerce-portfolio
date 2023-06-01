@@ -3,7 +3,34 @@ import PropTypes from 'prop-types'
 
 export const ShoppingCartContext = createContext()
 
+export const initializeLocalStorage = () =>  {
+    const accountInLocalStorage = localStorage.getItem('account')
+    const signOutInLocalStorage = localStorage.getItem('sign-out')
+    let parsedAccount
+    let parsedSignOut
+
+    if (!accountInLocalStorage) {
+        localStorage.setItem('account', JSON.stringify({}))
+        parsedAccount = {}
+    } else {
+        parsedAccount = JSON.parse(accountInLocalStorage)
+    }
+
+    if (!signOutInLocalStorage) {
+        localStorage.setItem('sign-out', JSON.stringify({}))
+        parsedSignOut = {}
+    } else {
+        parsedSignOut = JSON.parse(signOutInLocalStorage)
+    }
+}
+
 export const ShoppingCartProvider = ({ children }) => {
+    //My account
+    const [account, setAccount] = useState({})
+
+    //Sign out
+    const [signOut, setSignOut] = useState(false)
+
     // Shopping card - Increment Quantity
     const [count, setCount] = useState(0)
 
@@ -34,8 +61,6 @@ export const ShoppingCartProvider = ({ children }) => {
     // Get Products
     const [items, setItems] = useState(null)
     const [filteredItems, setFilteredItems] = useState(null)
-
-    console.log(filteredItems)
 
     // Search by title
     const [searchByTitle, setSearchByTitle] = useState(null)
@@ -100,7 +125,11 @@ export const ShoppingCartProvider = ({ children }) => {
             setSearchByTitle,
             filteredItems,
             searchByCategory,
-            setSearchByCategory
+            setSearchByCategory,
+            account,
+            setAccount,
+            signOut,
+            setSignOut
         }}>
             {children}
         </ShoppingCartContext.Provider> 
