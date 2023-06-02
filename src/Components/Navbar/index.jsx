@@ -57,10 +57,6 @@ export const Navbar = () => {
           Sign out
         </NavLink>
       </li>
-      <li className="flex items-center">
-        <ShoppingBagIcon className='h-6 w-6 text-black'/> 
-        {context.count}
-      </li>
     </>
   }
 
