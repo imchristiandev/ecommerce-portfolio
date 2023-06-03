@@ -1,33 +1,33 @@
 import { useContext } from "react";
 import { NavLink } from "react-router-dom";
 import { ShoppingCartContext } from "../../Context";
-import { ShoppingBagIcon } from "@heroicons/react/24/solid";
+import { ShoppingCart } from "../ShoppingCart";
 
 export const Navbar = () => {
   const context = useContext(ShoppingCartContext)
-  let activeStyle = "underline underline-offset-4"
+  const activeStyle = "underline underline-offset-4"
 
   // Sign out
   const signOut = localStorage.getItem('sign-out')
   const parsedSignOut = JSON.parse(signOut)
   const isUserSignOut = context.signOut || parsedSignOut
 
+  // Account
+  const account = localStorage.getItem('account')
+  const parsedAccount = JSON.parse(account)
+  // Has an account
+  const noAccountInLocalStorage = parsedAccount ? Object.keys(parsedAccount).length === 0 : true
+  const noAccountInLocalState = context.account ? Object.keys(context.account).length === 0 : true
+  const hasUserAnAccount = !noAccountInLocalStorage || !noAccountInLocalState
+
   const handleSignOut = () => {
-    console.log('sign out');
     const stringifiedSignOut = JSON.stringify(true)
     localStorage.setItem('sign-out', stringifiedSignOut)
     context.setSignOut(true)
   }
 
   const renderView = () => {
-    return isUserSignOut ?
-    <NavLink
-      to="/sign-in"
-      className={({ isActive }) => (isActive ? activeStyle : undefined)}
-      onClick={() => handleSignOut()}
-    >
-      Sign out
-    </NavLink> :
+    return (hasUserAnAccount && !isUserSignOut) ?
     <>
       <li className="text-black/60">
         chris@hello.com
@@ -57,7 +57,14 @@ export const Navbar = () => {
           Sign out
         </NavLink>
       </li>
-    </>
+    </> :
+    <NavLink
+      to="/sign-in"
+      className={({ isActive }) => (isActive ? activeStyle : undefined)}
+      onClick={() => handleSignOut()}
+    >
+      Sign out
+    </NavLink> 
   }
 
   return (
@@ -65,7 +72,7 @@ export const Navbar = () => {
       <ul className="flex items-center gap-3">
         <li className="font-semibold text-lg">
           <NavLink
-            to="/"
+            to={`${isUserSignOut ? '/sign-in' : '/'}`}
             onClick={() => context.setSearchByCategory(null)}
           >
             Shopi
@@ -129,10 +136,7 @@ export const Navbar = () => {
 
       <ul className="flex items-center gap-3">
         { renderView() }
-        <li className="flex items-center">
-          <ShoppingBagIcon className='h-6 w-6 text-black'/> 
-          {context.count}
-        </li>
+        <ShoppingCart />
       </ul>
     </nav>
   );
